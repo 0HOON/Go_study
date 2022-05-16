@@ -6,9 +6,8 @@ import (
 	"encoding/gob"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
-
-	"example.com/gocoin/blockchain"
 )
 
 const walletFile = "./tmp/wallets.data"
@@ -57,12 +56,15 @@ func (ws *Wallets) LoadFile() error {
 	var wallets Wallets
 
 	fileContent, err := ioutil.ReadFile(walletFile)
-	blockchain.Handle(err)
-
+	if err != nil {
+		log.Panic(err)
+	}
 	gob.Register(elliptic.P256())
 	decoder := gob.NewDecoder(bytes.NewReader(fileContent))
 	err = decoder.Decode(&wallets)
-	blockchain.Handle(err)
+	if err != nil {
+		log.Panic(err)
+	}
 
 	ws.Wallets = wallets.Wallets
 
@@ -77,8 +79,12 @@ func (ws *Wallets) SaveFile() {
 
 	encoder := gob.NewEncoder(&content)
 	err := encoder.Encode(ws)
-	blockchain.Handle(err)
+	if err != nil {
+		log.Panic(err)
+	}
 
 	err = ioutil.WriteFile(walletFile, content.Bytes(), 0644)
-	blockchain.Handle(err)
+	if err != nil {
+		log.Panic(err)
+	}
 }
