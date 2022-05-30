@@ -289,6 +289,8 @@ func HandleGetData(request []byte, chain *blockchain.BlockChain) {
 		if err != nil {
 			return
 		}
+
+		SendBlock(payload.AddrFrom, &block)
 	}
 
 	if payload.Type == "tx" {
@@ -348,7 +350,7 @@ func HandleTx(request []byte, chain *blockchain.BlockChain) {
 			}
 		}
 	} else {
-		if len(memoryPool) >= 2 && len(mineAddress) > 0 {
+		if len(memoryPool) >= 2 && len(minerAddress) > 0 {
 			MineTx(chain)
 		}
 	}
@@ -391,7 +393,7 @@ func MineTx(chain *blockchain.BlockChain) {
 	}
 
 	if len(memoryPool) > 0 {
-		MindTx(chain)
+		MineTx(chain)
 	}
 }
 
